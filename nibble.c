@@ -24,13 +24,9 @@ struct regbits_bit *get_bit_by_bitpos(struct regbits_nibble *n,
 static void update_nibble_value(struct regbits_nibble *n)
 {
         size_t i;
-        int v = 0;
+        int v;
         char new_hex[4]= {0};
-        for (i=0; i<REGBITS_BITS_PER_NIBBLE; i++) {
-                struct regbits_bit *b;
-                b = get_bit_by_bitpos(n, i);
-                v = v | (regbits_get_bit_value(b) << i);
-        }
+        v = regbits_nibble_get_value(n);
         snprintf(new_hex, sizeof(new_hex), "%X", v);
         gtk_entry_buffer_set_text(n->hex_buffer, new_hex, strlen(new_hex));
         return;
@@ -110,5 +106,17 @@ void regbits_nibble_set_be_label(struct regbits_nibble *n,
 {
         nibble_set_label(n, bitpos, REGBITS_ENDIAN_BIG_IDX, label);
         return;
+}
+
+int regbits_nibble_get_value(struct regbits_nibble *n)
+{
+        int v = 0;
+        size_t i;
+        for (i=0; i<REGBITS_BITS_PER_NIBBLE; i++) {
+                struct regbits_bit *b;
+                b = get_bit_by_bitpos(n, i);
+                v = v | (regbits_get_bit_value(b) << i);
+        }
+        return v;
 }
 

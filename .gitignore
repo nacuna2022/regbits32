@@ -1,6 +1,6 @@
 build/
 compile_commands.json
-regbits
+regbits32
 *.swp
 .cproject
 .project
