@@ -40,9 +40,14 @@ struct regbits_nibble *regbits_new_nibble(void)
                 gtk_widget_set_hexpand(GTK_WIDGET(bit->box), FALSE);
                 gtk_box_append(GTK_BOX(hbox), bit->box);
                 n->bit[i] = bit;
-
         }
+        gtk_widget_set_halign(GTK_WIDGET(hbox), GTK_ALIGN_CENTER);
         gtk_box_append(GTK_BOX(vbox), hbox);
+
+        n->hex_buffer = gtk_entry_buffer_new("0", 1);
+        n->hex_entry = gtk_entry_new_with_buffer(n->hex_buffer);
+        gtk_entry_set_alignment(GTK_ENTRY(n->hex_entry), 1);
+        gtk_box_append(GTK_BOX(vbox), n->hex_entry);
         n->box = vbox;
         return n;
 }
