@@ -17,6 +17,32 @@
  * +---+---+---+---+
  *
  */
+static 
+struct regbits_bit *get_bit_by_bitpos(struct regbits_nibble *n,
+                                      const int bitpos);
+
+static void update_nibble_value(struct regbits_nibble *n)
+{
+        size_t i;
+        int v = 0;
+        char new_hex[4]= {0};
+        for (i=0; i<REGBITS_BITS_PER_NIBBLE; i++) {
+                struct regbits_bit *b;
+                b = get_bit_by_bitpos(n, i);
+                v = v | (regbits_get_bit_value(b) << i);
+        }
+        snprintf(new_hex, sizeof(new_hex), "%X", v);
+        gtk_entry_buffer_set_text(n->hex_buffer, new_hex, strlen(new_hex));
+        return;
+}
+
+static void checkbox_toggle(struct regbits_bit *b)
+{
+        struct regbits_nibble *n;
+        n = regbits_get_bitdata(b);
+        update_nibble_value(n);
+        return;
+}
 
 struct regbits_nibble *regbits_new_nibble(void)
 {
@@ -35,7 +61,8 @@ struct regbits_nibble *regbits_new_nibble(void)
         hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         for (i=0; i<REGBITS_BITS_PER_NIBBLE; i++) {
                 struct regbits_bit *bit;
-                bit = regbits_new_bit();
+                bit = regbits_new_bit(checkbox_toggle);
+                regbits_set_bitdata(bit, n);
                 /* prevent the bitbox from getting any sizing hints */
                 gtk_widget_set_hexpand(GTK_WIDGET(bit->box), FALSE);
                 gtk_box_append(GTK_BOX(hbox), bit->box);
