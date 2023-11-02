@@ -1,0 +1,9 @@
+build/
+compile_commands.json
+regbits
+*.swp
+.cproject
+.project
+.settings/
+tags
+
